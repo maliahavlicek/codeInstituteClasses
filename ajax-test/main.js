@@ -1,9 +1,6 @@
-const baseUrl = "https://swapi.co/api/";
-
-
-function getData(type,cb){
+function getData(url,cb){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", baseUrl+type +"/");
+    xhr.open("GET", url);
     xhr.send();
 
     xhr.onreadystatechange = function() {
@@ -23,13 +20,29 @@ function getTableHeaders(obj){
     return `<tr>${tableHeaders}</tr>`;
 }
 
-function writeToDocment(type){
+function generatePaginationButtons(next, prev){
+    el = '';
+    if(prev){
+        el+= `<button onclick="writeToDocment('${prev}')">Previous</button>`;
+    }
+    if(next){
+        el += `<button onclick="writeToDocment('${next}')">Next</button>`;
+    }
+    return el;
+}
+
+
+function writeToDocment(url){
     var tableRows=[];
     var el = document.getElementById("data");
     el.innerHTML='';
 
-    getData(type, function(data){
+    getData(url, function(data){
        // console.dir(data);
+        var pagination;
+        if(data.next || data.previous){
+            pagination =  generatePaginationButtons(data.next, data.previous);
+        }
         data = data.results;
         var tableHeaders = getTableHeaders(data[0]);
 
@@ -42,7 +55,7 @@ function writeToDocment(type){
             });
             tableRows.push(`<tr>${dataRow}</tr>`);
         });
-        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>`;
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`;
 
 
     });
