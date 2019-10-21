@@ -39,7 +39,7 @@ function writeToDocment(url){
 
     getData(url, function(data){
        // console.dir(data);
-        var pagination;
+        var pagination='';
         if(data.next || data.previous){
             pagination =  generatePaginationButtons(data.next, data.previous);
         }
@@ -55,7 +55,7 @@ function writeToDocment(url){
             });
             tableRows.push(`<tr>${dataRow}</tr>`);
         });
-        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`;
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`.replace(/,/g,'');
 
 
     });
